@@ -1,0 +1,10 @@
+/todo-app
+  |-- app.py
+  |-- /templates
+      |-- index.html
+      |-- edit.html
+  |-- /static
+      |-- styles.css
+  |-- Dockerfile
+  |-- requirements.txt
+  |-- .gitignore
