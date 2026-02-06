@@ -75,7 +75,6 @@ def edit(id):
 
 if __name__ == "__main__":
     import os
-
     os.makedirs("data", exist_ok=True)
     db = sqlite3.connect(DB_PATH)
     db.execute(
@@ -89,4 +88,6 @@ if __name__ == "__main__":
     )
     db.close()
 
-    app.run(host="0.0.0.0", port=5000)
+    # Enable debug mode
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
