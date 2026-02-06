@@ -1,0 +1,49 @@
+body {
+    background: #f4f6f8;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.add-form, .edit-form {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+input, select, button {
+    padding: 6px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #eee;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+
+li.done {
+    text-decoration: line-through;
+    background: #c8e6c9;
+}
+
+.filters a {
+    margin-right: 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
