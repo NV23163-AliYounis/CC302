@@ -4,6 +4,7 @@ import os
 
 app = Flask(__name__)
 DB_PATH = "data/nv23163_todo.db"
+APP_VERSION = "1.0.0"
 
 
 def get_db():
@@ -54,7 +55,7 @@ def index():
     ).fetchall()
     db.close()
 
-    return render_template("index.html", tasks=tasks)
+    return render_template("index.html", tasks=tasks, version=APP_VERSION)
 
 
 @app.route("/update/<int:id>", methods=["POST"])

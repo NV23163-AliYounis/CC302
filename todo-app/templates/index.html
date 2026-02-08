@@ -2,42 +2,54 @@
 <html lang="en">
 <head>
     <title>NV23163 – Todo App</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
 
 <header>
-    <h1>NV23163 – Todo App</h1>
-    <p>Event-Based Task Planner</p>
+    <div class="header-content">
+        <h1>📅 NV23163 – Todo App</h1>
+        <p>Event-Based Task Planner</p>
+    </div>
 </header>
 
 <section class="creator">
     <h2>Create Event</h2>
 
     <form method="POST">
-        <input type="text" name="title" placeholder="Event title" required>
+        <div class="form-row">
+            <input type="text" name="title" placeholder="Event title" required>
+        </div>
 
-        <select name="task_type">
-            <option>Work</option>
-            <option>Event</option>
-            <option>Personal</option>
-            <option>Holiday</option>
-        </select>
+        <div class="form-row form-row-2col">
+            <select name="task_type">
+                <option>Work</option>
+                <option>Event</option>
+                <option>Personal</option>
+                <option>Holiday</option>
+            </select>
 
-        <select name="status">
-            <option>Planned</option>
-            <option>In-Progress</option>
-            <option>Done</option>
-            <option>Cancelled</option>
-        </select>
+            <select name="status">
+                <option>Planned</option>
+                <option>In-Progress</option>
+                <option>Done</option>
+                <option>Cancelled</option>
+            </select>
+        </div>
 
-        <label>Start</label>
-        <input type="datetime-local" name="start_time" required>
+        <div class="form-row form-row-2col">
+            <div>
+                <label>Start</label>
+                <input type="datetime-local" name="start_time" required>
+            </div>
+            <div>
+                <label>End</label>
+                <input type="datetime-local" name="end_time" required>
+            </div>
+        </div>
 
-        <label>End</label>
-        <input type="datetime-local" name="end_time" required>
-
-        <button>Create Event</button>
+        <button><span class="button-text">Create Event</span><span class="version-badge">v{{ version }}</span></button>
     </form>
 </section>
 
@@ -52,7 +64,6 @@
                 <th>Status</th>
                 <th>Start</th>
                 <th>End</th>
-                <th>Version</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -60,12 +71,11 @@
         <tbody>
             {% for t in tasks %}
             <tr class="status-{{ t.status | lower }}">
-                <td>{{ t.title }}</td>
-                <td>{{ t.task_type }}</td>
-                <td>{{ t.status }}</td>
-                <td>{{ t.start_time }}</td>
-                <td>{{ t.end_time }}</td>
-                <td>v{{ t.version }}</td>
+                <td><strong>{{ t.title }}</strong></td>
+                <td><span class="type-badge type-{{ t.task_type | lower }}">{% if t.task_type == 'Work' %}💼{% elif t.task_type == 'Event' %}🎉{% elif t.task_type == 'Personal' %}🎯{% elif t.task_type == 'Holiday' %}🏖️{% endif %} {{ t.task_type }}</span></td>
+                <td><span class="status-badge status-{{ t.status | lower }}">{{ t.status }}</span></td>
+                <td class="time-cell">{{ t.start_time }}</td>
+                <td class="time-cell">{{ t.end_time }}</td>
                 <td>
                     <form method="POST" action="/update/{{ t.id }}" class="inline">
                         <input name="title" value="{{ t.title }}">
