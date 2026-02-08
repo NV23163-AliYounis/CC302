@@ -1,49 +1,73 @@
 body {
-    background: #f4f6f8;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #eef2f3, #d9e2ec);
+    font-family: system-ui, sans-serif;
 }
 
 .container {
-    width: 600px;
+    max-width: 900px;
     margin: 40px auto;
     background: white;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 h1 {
     text-align: center;
 }
 
-.add-form, .edit-form {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 10px;
+.card {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.card h2 {
+    margin-top: 0;
 }
 
 input, select, button {
-    padding: 6px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
-li {
-    background: #eee;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-radius: 5px;
-}
-
-li.done {
-    text-decoration: line-through;
-    background: #c8e6c9;
+button:hover {
+    background: #1e40af;
 }
 
 .filters a {
-    margin-right: 10px;
-    text-decoration: none;
+    margin-right: 15px;
     font-weight: bold;
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+tr.done {
+    background: #dcfce7;
+    text-decoration: line-through;
+}
+
+.inline-form {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
 }
