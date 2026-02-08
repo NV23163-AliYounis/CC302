@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Advanced Todo App</title>
+    <title>Todo Manager v2</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
 <div class="container">
-    <h1>Todo Manager</h1>
+    <h1>🗂 Todo Manager</h1>
 
-    <form method="POST" class="add-form">
+    <!-- Create Task -->
+    <form method="POST" class="card">
+        <h2>Create Task</h2>
+
         <input type="text" name="task" placeholder="Task name" required>
+
+        <select name="category">
+            <option>Work</option>
+            <option>Personal</option>
+            <option>Holiday</option>
+        </select>
 
         <select name="priority">
             <option>Low</option>
@@ -18,41 +27,65 @@
             <option>High</option>
         </select>
 
-        <input type="date" name="due_date">
+        <input type="datetime-local" name="due_datetime">
+
         <button>Add Task</button>
     </form>
 
+    <!-- Filters -->
     <div class="filters">
         <a href="/?filter=all">All</a>
         <a href="/?filter=active">Active</a>
         <a href="/?filter=completed">Completed</a>
     </div>
 
-    <ul>
-        {% for todo in todos %}
-        <li class="{{ 'done' if todo.completed }}">
-            <strong>{{ todo.task }}</strong>
-            <span>{{ todo.priority }}</span>
-            <span>{{ todo.due_date }}</span>
+    <!-- Task List -->
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Due</th>
+                <th>Version</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-            {% if not todo.completed %}
-                <a href="/complete/{{ todo.id }}">✔</a>
-            {% endif %}
-            <a href="/delete/{{ todo.id }}">❌</a>
+        <tbody>
+            {% for todo in todos %}
+            <tr class="{{ 'done' if todo.completed }}">
+                <td>{{ todo.task }}</td>
+                <td>{{ todo.category }}</td>
+                <td>{{ todo.priority }}</td>
+                <td>{{ todo.due_datetime }}</td>
+                <td>v{{ todo.version }}</td>
+                <td>
+                    {% if not todo.completed %}
+                        <a href="/complete/{{ todo.id }}">✔</a>
+                    {% endif %}
+                    <a href="/delete/{{ todo.id }}">❌</a>
 
-            <form method="POST" action="/edit/{{ todo.id }}" class="edit-form">
-                <input name="task" value="{{ todo.task }}">
-                <select name="priority">
-                    <option {{ 'selected' if todo.priority=='Low' }}>Low</option>
-                    <option {{ 'selected' if todo.priority=='Medium' }}>Medium</option>
-                    <option {{ 'selected' if todo.priority=='High' }}>High</option>
-                </select>
-                <input type="date" name="due_date" value="{{ todo.due_date }}">
-                <button>Update</button>
-            </form>
-        </li>
-        {% endfor %}
-    </ul>
+                    <form method="POST" action="/edit/{{ todo.id }}" class="inline-form">
+                        <input name="task" value="{{ todo.task }}">
+                        <select name="category">
+                            <option {{ 'selected' if todo.category=='Work' }}>Work</option>
+                            <option {{ 'selected' if todo.category=='Personal' }}>Personal</option>
+                            <option {{ 'selected' if todo.category=='Holiday' }}>Holiday</option>
+                        </select>
+                        <select name="priority">
+                            <option {{ 'selected' if todo.priority=='Low' }}>Low</option>
+                            <option {{ 'selected' if todo.priority=='Medium' }}>Medium</option>
+                            <option {{ 'selected' if todo.priority=='High' }}>High</option>
+                        </select>
+                        <input type="datetime-local" name="due_datetime" value="{{ todo.due_datetime }}">
+                        <button>Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 </body>
