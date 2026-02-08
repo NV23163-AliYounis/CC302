@@ -1,10 +1,9 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime
 import os
 
 app = Flask(__name__)
-DB_PATH = "data/todos.db"
+DB_PATH = "data/nv23163_todo.db"
 
 
 def get_db():
@@ -13,45 +12,72 @@ def get_db():
     return conn
 
 
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            task_type TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'Planned',
+            start_time TEXT NOT NULL,
+            end_time TEXT NOT NULL,
+            version INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+    conn.commit()
+    conn.close()
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     db = get_db()
 
     if request.method == "POST":
-        db.execute(
-            """
-            INSERT INTO todos (task, category, priority, due_datetime)
-            VALUES (?, ?, ?, ?)
-            """,
-            (
-                request.form["task"],
-                request.form["category"],
-                request.form["priority"],
-                request.form["due_datetime"],
-            ),
-        )
+        db.execute("""
+            INSERT INTO tasks (title, task_type, status, start_time, end_time)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            request.form["title"],
+            request.form["task_type"],
+            request.form["status"],
+            request.form["start_time"],
+            request.form["end_time"],
+        ))
         db.commit()
         return redirect(url_for("index"))
 
-    filter_type = request.args.get("filter", "all")
-
-    query = "SELECT * FROM todos"
-    if filter_type == "active":
-        query += " WHERE completed = 0"
-    elif filter_type == "completed":
-        query += " WHERE completed = 1"
-
-    query += " ORDER BY due_datetime ASC"
-
-    todos = db.execute(query).fetchall()
+    tasks = db.execute(
+        "SELECT * FROM tasks ORDER BY start_time ASC"
+    ).fetchall()
     db.close()
-    return render_template("index.html", todos=todos, filter_type=filter_type)
+
+    return render_template("index.html", tasks=tasks)
 
 
-@app.route("/complete/<int:id>")
-def complete(id):
+@app.route("/update/<int:id>", methods=["POST"])
+def update(id):
     db = get_db()
-    db.execute("UPDATE todos SET completed = 1 WHERE id = ?", (id,))
+    db.execute("""
+        UPDATE tasks
+        SET title = ?,
+            task_type = ?,
+            status = ?,
+            start_time = ?,
+            end_time = ?,
+            version = version + 1,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+    """, (
+        request.form["title"],
+        request.form["task_type"],
+        request.form["status"],
+        request.form["start_time"],
+        request.form["end_time"],
+        id,
+    ))
     db.commit()
     db.close()
     return redirect(url_for("index"))
@@ -60,29 +86,7 @@ def complete(id):
 @app.route("/delete/<int:id>")
 def delete(id):
     db = get_db()
-    db.execute("DELETE FROM todos WHERE id = ?", (id,))
-    db.commit()
-    db.close()
-    return redirect(url_for("index"))
-
-
-@app.route("/edit/<int:id>", methods=["POST"])
-def edit(id):
-    db = get_db()
-    db.execute(
-        """
-        UPDATE todos
-        SET task=?, category=?, priority=?, due_datetime=?, version=version+1
-        WHERE id=?
-        """,
-        (
-            request.form["task"],
-            request.form["category"],
-            request.form["priority"],
-            request.form["due_datetime"],
-            id,
-        ),
-    )
+    db.execute("DELETE FROM tasks WHERE id = ?", (id,))
     db.commit()
     db.close()
     return redirect(url_for("index"))
@@ -90,18 +94,5 @@ def edit(id):
 
 if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
-    db = sqlite3.connect(DB_PATH)
-    db.execute(
-        """CREATE TABLE IF NOT EXISTS todos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            task TEXT,
-            category TEXT,
-            priority TEXT,
-            due_datetime TEXT,
-            completed INTEGER,
-            version INTEGER DEFAULT 1,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP
-        )"""
-    )
-    db.close()
-    app.run(debug=True)
+    init_db()
+    app.run(host="0.0.0.0", port=5000, debug=True)

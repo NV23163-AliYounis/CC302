@@ -1,92 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Todo Manager v2</title>
+    <title>NV23163 – Todo App</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>🗂 Todo Manager</h1>
+<header>
+    <h1>NV23163 – Todo App</h1>
+    <p>Event-Based Task Planner</p>
+</header>
 
-    <!-- Create Task -->
-    <form method="POST" class="card">
-        <h2>Create Task</h2>
+<section class="creator">
+    <h2>Create Event</h2>
 
-        <input type="text" name="task" placeholder="Task name" required>
+    <form method="POST">
+        <input type="text" name="title" placeholder="Event title" required>
 
-        <select name="category">
+        <select name="task_type">
             <option>Work</option>
+            <option>Event</option>
             <option>Personal</option>
             <option>Holiday</option>
         </select>
 
-        <select name="priority">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
+        <select name="status">
+            <option>Planned</option>
+            <option>In-Progress</option>
+            <option>Done</option>
+            <option>Cancelled</option>
         </select>
 
-        <input type="datetime-local" name="due_datetime">
+        <label>Start</label>
+        <input type="datetime-local" name="start_time" required>
 
-        <button>Add Task</button>
+        <label>End</label>
+        <input type="datetime-local" name="end_time" required>
+
+        <button>Create Event</button>
     </form>
+</section>
 
-    <!-- Filters -->
-    <div class="filters">
-        <a href="/?filter=all">All</a>
-        <a href="/?filter=active">Active</a>
-        <a href="/?filter=completed">Completed</a>
-    </div>
+<section class="table-section">
+    <h2>Schedule</h2>
 
-    <!-- Task List -->
     <table>
         <thead>
             <tr>
-                <th>Task</th>
-                <th>Category</th>
-                <th>Priority</th>
-                <th>Due</th>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>Version</th>
                 <th>Actions</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for todo in todos %}
-            <tr class="{{ 'done' if todo.completed }}">
-                <td>{{ todo.task }}</td>
-                <td>{{ todo.category }}</td>
-                <td>{{ todo.priority }}</td>
-                <td>{{ todo.due_datetime }}</td>
-                <td>v{{ todo.version }}</td>
+            {% for t in tasks %}
+            <tr class="status-{{ t.status | lower }}">
+                <td>{{ t.title }}</td>
+                <td>{{ t.task_type }}</td>
+                <td>{{ t.status }}</td>
+                <td>{{ t.start_time }}</td>
+                <td>{{ t.end_time }}</td>
+                <td>v{{ t.version }}</td>
                 <td>
-                    {% if not todo.completed %}
-                        <a href="/complete/{{ todo.id }}">✔</a>
-                    {% endif %}
-                    <a href="/delete/{{ todo.id }}">❌</a>
-
-                    <form method="POST" action="/edit/{{ todo.id }}" class="inline-form">
-                        <input name="task" value="{{ todo.task }}">
-                        <select name="category">
-                            <option {{ 'selected' if todo.category=='Work' }}>Work</option>
-                            <option {{ 'selected' if todo.category=='Personal' }}>Personal</option>
-                            <option {{ 'selected' if todo.category=='Holiday' }}>Holiday</option>
+                    <form method="POST" action="/update/{{ t.id }}" class="inline">
+                        <input name="title" value="{{ t.title }}">
+                        <select name="task_type">
+                            <option {{ 'selected' if t.task_type=='Work' }}>Work</option>
+                            <option {{ 'selected' if t.task_type=='Event' }}>Event</option>
+                            <option {{ 'selected' if t.task_type=='Personal' }}>Personal</option>
+                            <option {{ 'selected' if t.task_type=='Holiday' }}>Holiday</option>
                         </select>
-                        <select name="priority">
-                            <option {{ 'selected' if todo.priority=='Low' }}>Low</option>
-                            <option {{ 'selected' if todo.priority=='Medium' }}>Medium</option>
-                            <option {{ 'selected' if todo.priority=='High' }}>High</option>
+                        <select name="status">
+                            <option {{ 'selected' if t.status=='Planned' }}>Planned</option>
+                            <option {{ 'selected' if t.status=='In-Progress' }}>In-Progress</option>
+                            <option {{ 'selected' if t.status=='Done' }}>Done</option>
+                            <option {{ 'selected' if t.status=='Cancelled' }}>Cancelled</option>
                         </select>
-                        <input type="datetime-local" name="due_datetime" value="{{ todo.due_datetime }}">
-                        <button>Update</button>
+                        <input type="datetime-local" name="start_time" value="{{ t.start_time }}">
+                        <input type="datetime-local" name="end_time" value="{{ t.end_time }}">
+                        <button class="update">Update</button>
                     </form>
+                    <a class="delete" href="/delete/{{ t.id }}">✖</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</div>
+</section>
 
 </body>
 </html>
