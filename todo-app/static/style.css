@@ -138,18 +138,24 @@ header p {
     display: block;
 }
 
-.version-badge {
-    position: absolute;
-    bottom: 8px;
-    right: 10px;
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    opacity: 0.85;
+.version-footer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.25);
+    font-size: 0.85rem;
+    font-weight: 600;
     letter-spacing: 0.5px;
+    z-index: 999;
+}
+
+.version-text {
+    font-family: 'Poppins', sans-serif;
+    display: block;
 }
 
 .creator button:hover {
