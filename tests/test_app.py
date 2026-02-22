@@ -1,16 +1,13 @@
-# tests/test_app.py
-
 def test_app_import():
-    from app import app  # or: from app import create_app; app = create_app()
+    from app import app
     assert app is not None
 
 
 def test_app_responds():
-    """Smoke test: app responds to a request."""
     from app import app
     app.config['TESTING'] = True
     with app.test_client() as c:
-        rv = c.get('/')  # or c.get('/health') if you have that route
+        rv = c.get('/')
     assert rv.status_code in [200, 302]
 
-# <-- make sure there are no spaces on this line
+# <-- this is the blank line at the end of file
