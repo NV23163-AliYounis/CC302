@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_app_import():
     from app import app
 
