@@ -10,4 +10,4 @@ def test_app_responds():
         rv = c.get('/')
     assert rv.status_code in [200, 302]
 
-# <-- this is the blank line at the end of file
+# <-- this is one blank line here at the end
