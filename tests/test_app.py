@@ -11,4 +11,6 @@ def test_app_responds():
     app.config['TESTING'] = True
     with app.test_client() as c:
         rv = c.get('/')  # or c.get('/health') if you have that route
-    assert rv.status_code in [200, 302]    
+    assert rv.status_code in [200, 302]
+
+# <-- make sure there are no spaces on this line
