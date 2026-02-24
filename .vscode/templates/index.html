@@ -53,12 +53,36 @@
     </form>
 </section>
 
+<section class="creator">
+    <h2>Filter & Search</h2>
+
+    <form method="GET">
+        <div class="form-row form-row-2col">
+            <select name="status">
+                <option value="All" {% if selected_status == 'All' %}selected{% endif %}>All</option>
+                <option value="Planned" {% if selected_status == 'Planned' %}selected{% endif %}>Planned</option>
+                <option value="In-Progress" {% if selected_status == 'In-Progress' %}selected{% endif %}>In-Progress</option>
+                <option value="Done" {% if selected_status == 'Done' %}selected{% endif %}>Done</option>
+                <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+
+            <input type="text" name="q" placeholder="Search title..." value="{% if q %}{{ q }}{% endif %}">
+        </div>
+
+        <div class="form-row">
+            <button>Apply</button>
+            <a class="button-link" href="/">Clear</a>
+        </div>
+    </form>
+</section>
+
 <footer class="version-footer">
     <span class="version-text">v{{ version }}</span>
 </footer>
 
 <section class="table-section">
     <h2>Schedule</h2>
+    
 
     <table>
         <thead>

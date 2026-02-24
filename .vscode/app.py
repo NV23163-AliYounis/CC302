@@ -84,12 +84,40 @@ def index():
         db.commit()
         return redirect(url_for("index"))
 
-    tasks = db.execute(
-        "SELECT * FROM tasks ORDER BY start_time ASC"
-    ).fetchall()
+    # Support filtering by status via query parameter e.g. ?status=Done
+    selected_status = request.args.get("status", "All")
+    search_q = request.args.get("q", "").strip()
+
+    # Build query dynamically based on provided filters
+    if selected_status and selected_status != "All" and search_q:
+        tasks = db.execute(
+            "SELECT * FROM tasks WHERE status = ? AND title LIKE ? ORDER BY start_time ASC",
+            (selected_status, f"%{search_q}%")
+        ).fetchall()
+    elif selected_status and selected_status != "All":
+        tasks = db.execute(
+            "SELECT * FROM tasks WHERE status = ? ORDER BY start_time ASC",
+            (selected_status,)
+        ).fetchall()
+    elif search_q:
+        tasks = db.execute(
+            "SELECT * FROM tasks WHERE title LIKE ? ORDER BY start_time ASC",
+            (f"%{search_q}%",)
+        ).fetchall()
+    else:
+        tasks = db.execute(
+            "SELECT * FROM tasks ORDER BY start_time ASC"
+        ).fetchall()
+
     db.close()
 
-    return render_template("index.html", tasks=tasks, version=APP_VERSION)
+    return render_template(
+        "index.html",
+        tasks=tasks,
+        version=APP_VERSION,
+        selected_status=selected_status,
+        q=search_q,
+    )
 
 
 @app.route("/update/<int:id>", methods=["POST"])
