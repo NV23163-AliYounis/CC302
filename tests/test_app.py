@@ -11,4 +11,4 @@ def test_app_responds():
     with app.test_client() as client:
         response = client.get("/")
 
-    assert response.status_code in [200, 302]
+assert response.status_code in [200, 302]
